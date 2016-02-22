@@ -2,6 +2,7 @@ require_relative 'solution'
 
 
 describe 'solution' do
+  include Solution
   it 'passes these tests' do
     expect(seven(times(five))).to eq 35
     expect(four(plus(nine))).to eq 13
