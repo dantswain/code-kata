@@ -13,40 +13,28 @@ class LazyNumber
   end
 
   def evaluate(other)
-    other.value.send(@op, @value)
-  end
-end
-
-module NameToNumber
-  module_function
-
-  def number(name)
-    as_int = {:one => 1,
-              :two => 2,
-              :three => 3,
-              :four => 4,
-              :five => 5,
-              :six => 6,
-              :seven => 7,
-              :eight => 8,
-              :nine => 9}[name]
-    if as_int.nil?
-      nil
-    else
-      LazyNumber.new(as_int)
-    end
+    other.send(@op, @value)
   end
 end
 
 module Solution
-  def method_missing(name, *args, &block)
-    value = NameToNumber.number(name)
-    if value && args.size == 0
-      value
-    elsif value && args.size == 1
-      args.first.evaluate(value)
-    else
-      super
+  [
+    :one,
+    :two,
+    :three,
+    :four,
+    :five,
+    :six,
+    :seven,
+    :eight,
+    :nine
+  ].each_with_index.map do |name, ix|
+    define_method(name) do |other = nil|
+      if other.nil?
+        LazyNumber.new(ix + 1)
+      else
+        other.evaluate(ix + 1)
+      end
     end
   end
 
